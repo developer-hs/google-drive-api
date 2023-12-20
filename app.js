@@ -166,15 +166,17 @@ app.post("/upload", upload.array("files"), async (req, res) => {
       fields: "files(id, name)",
     });
 
-    //
+    // 두번째 폴더(주문일) 존재하면 가져오고 없으면 생성
     secondFolderId = await folderIdGetOrCraate(firstFolderName, secondFolderName, secondParentFolderSearchRes);
 
+    // 주문일 폴더 안에 주문번호 폴더가 있는지 확인
     const thirdParentFolderSearchRes = await drive.files.list({
       q: `'${secondFolderId}' in parents and mimeType='application/vnd.google-apps.folder' and name='${thirdFolderName}'`,
       spaces: "drive",
       fields: "files(id, name)",
     });
 
+    // 세번째 폴더(주문번호) 존재하면 가져오고 없으면 생성
     thirdFolderId = await folderIdGetOrCraate(secondFolderId, thirdFolderName, thirdParentFolderSearchRes);
 
     for (const file of files) {
